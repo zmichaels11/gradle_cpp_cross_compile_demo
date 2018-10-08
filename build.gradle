@@ -1,7 +1,7 @@
 apply plugin: 'cpp'
 
 wrapper {
-    gradleVersion = '4.8'
+    gradleVersion = '4.10.2'
 }
 
 model {
@@ -39,12 +39,6 @@ model {
 
     toolChains {
         gcc(Gcc) {
-            eachPlatform {
-                cppCompiler.withArguments { args -> 
-                    args << "-std=c++14"
-                }
-            }
-
             target("linux_armv7") {
                 cCompiler.executable = "arm-linux-gnueabi-gcc"
                 cppCompiler.executable = "arm-linux-gnueabi-g++"
@@ -151,6 +145,14 @@ model {
                         srcDir "src/main/include"
                         include "**/*.hpp"
                     }
+                }
+            }
+
+            binaries.all {
+                if (toolChain instanceof VisualCpp) {
+                    cppCompiler.args << "/std:c++14"
+                } else {
+                    cppCompiler.args << "-std=c++14"
                 }
             }
         }
